@@ -13,7 +13,7 @@ namespace ConsoleApp
 
         public Garden(int size)
         {
-            Size = size;
+            Size = size < 0 ? 0 : size;
             Items = new List<string>();
         }
 
