@@ -30,8 +30,12 @@
             return string.Join("\n", _logs
                 .Where(x => x.Key >= from)
                 .Where(x => x.Key <= to)
-                .Select(x => x.Value));
+                .Select(x => $"{x.Key.ToShortDateString()} {x.Key.ToShortTimeString()}: {x.Value}"));
         }
 
+        public Task<string> GetLogsAsync(DateTime from, DateTime to)
+        {
+            return Task.FromResult(GetLogs(from, to));
+        }
     }
 }
