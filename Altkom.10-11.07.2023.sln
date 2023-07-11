@@ -3,13 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{8AE2263C-ADFB-48FB-9470-68CCFDB4B531}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{8AE2263C-ADFB-48FB-9470-68CCFDB4B531}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp.Test.xUnit", "ConsoleApp.Test.xUnit\ConsoleApp.Test.xUnit.csproj", "{A1747FB3-C1A5-427C-BCD5-676686E6820E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp.Test.xUnit", "ConsoleApp.Test.xUnit\ConsoleApp.Test.xUnit.csproj", "{A1747FB3-C1A5-427C-BCD5-676686E6820E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp.Test.NUnit", "ConsoleApp.Test.NUnit\ConsoleApp.Test.NUnit.csproj", "{4C798E44-D293-4ABC-BD3A-704211A20C7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp.Test.NUnit", "ConsoleApp.Test.NUnit\ConsoleApp.Test.NUnit.csproj", "{4C798E44-D293-4ABC-BD3A-704211A20C7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp.Test.MSTest", "ConsoleApp.Test.MSTest\ConsoleApp.Test.MSTest.csproj", "{C883FD2B-A2CB-4AB3-A4FF-CBE22C761DD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp.Test.MSTest", "ConsoleApp.Test.MSTest\ConsoleApp.Test.MSTest.csproj", "{C883FD2B-A2CB-4AB3-A4FF-CBE22C761DD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{E8C2E39C-4E73-41E5-8CBC-C696269E004A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{559C5DD9-46EE-47E6-9FA9-438F9CA84E72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Interfaces", "Services.Interfaces\Services.Interfaces.csproj", "{A493F0E7-79BD-45E7-B7BA-D50A927F37E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi.Test", "WebApi.Test\WebApi.Test.csproj", "{131AA246-B5CD-4B69-B1C9-CF59EE372F39}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +41,22 @@ Global
 		{C883FD2B-A2CB-4AB3-A4FF-CBE22C761DD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C883FD2B-A2CB-4AB3-A4FF-CBE22C761DD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C883FD2B-A2CB-4AB3-A4FF-CBE22C761DD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8C2E39C-4E73-41E5-8CBC-C696269E004A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8C2E39C-4E73-41E5-8CBC-C696269E004A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8C2E39C-4E73-41E5-8CBC-C696269E004A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8C2E39C-4E73-41E5-8CBC-C696269E004A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{559C5DD9-46EE-47E6-9FA9-438F9CA84E72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{559C5DD9-46EE-47E6-9FA9-438F9CA84E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{559C5DD9-46EE-47E6-9FA9-438F9CA84E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{559C5DD9-46EE-47E6-9FA9-438F9CA84E72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A493F0E7-79BD-45E7-B7BA-D50A927F37E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A493F0E7-79BD-45E7-B7BA-D50A927F37E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A493F0E7-79BD-45E7-B7BA-D50A927F37E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A493F0E7-79BD-45E7-B7BA-D50A927F37E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{131AA246-B5CD-4B69-B1C9-CF59EE372F39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{131AA246-B5CD-4B69-B1C9-CF59EE372F39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{131AA246-B5CD-4B69-B1C9-CF59EE372F39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{131AA246-B5CD-4B69-B1C9-CF59EE372F39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
