@@ -1,4 +1,6 @@
 ﻿using ConsoleApp.Example;
+using FluentAssertions;
+using FluentAssertions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,6 +90,19 @@ namespace ConsoleApp.Test.NUnit.Example
                             .Where(x => int.TryParse(x.First, out _))
                             .All(x => x.First == x.Second));
 
+        }
+
+        [Test]
+        public void Compute_3000000_ExecutionTimeBelow1s()
+        {
+            //Arrange
+            const int COUNT = 3000000;
+
+            //Act
+            Action action = () => FizzBuzz.Compute(COUNT);
+
+            //Assert
+            action.ExecutionTime().Should().BeLessThan(1.Seconds());
         }
     }
 }
