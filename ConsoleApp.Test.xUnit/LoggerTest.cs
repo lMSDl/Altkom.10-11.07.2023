@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace ConsoleApp.Test.xUnit
 {
@@ -23,7 +25,8 @@ namespace ConsoleApp.Test.xUnit
 
             //Assert
             DateTime to = DateTime.Now;
-            Assert.Contains(MESSAGE, logger.GetLogs(from, to));
+            //Assert.Contains(MESSAGE, logger.GetLogs(from, to));
+            logger.GetLogs(from, to).Should().Contain(MESSAGE);
         }
 
         [Fact]
@@ -39,11 +42,33 @@ namespace ConsoleApp.Test.xUnit
             logger.Log(MESSAGE);
 
             //Assert
-            Assert.True(result);
+            //Assert.True(result);
+            result.Should().BeTrue();
         }
 
         [Fact]
         public void Log_AnyMessage_ValidEventInvoked()
+        {
+            //Arrage
+            var logger = new Logger();
+            const string MESSAGE = "a";
+            using var monitor = logger.Monitor();
+            DateTime from = DateTime.Now;
+
+            //Act
+            logger.Log(MESSAGE);
+
+            //Assert
+            DateTime to = DateTime.Now;
+
+            using (new AssertionScope())
+                monitor.Should().Raise(nameof(Logger.MessageLogged))
+                .WithSender(logger)
+                .WithArgs<Logger.LoggerEventArgs>(a => a.Message == MESSAGE); 
+
+        }
+        [Fact]
+        public void Log_AnyMessage_ValidEventInvoked2()
         {
             //Arrage
             var logger = new Logger();
@@ -58,11 +83,36 @@ namespace ConsoleApp.Test.xUnit
 
             //Assert
             DateTime to = DateTime.Now;
-            Assert.Equal(logger, loggerSender);
-            Assert.NotNull(loggerEventArgs);
-            Assert.Equal(MESSAGE, loggerEventArgs.Message);
-            Assert.InRange(loggerEventArgs.DateTime, from, to);
+            using (new AssertionScope())
+            {
+                loggerSender.Should().Be(logger);
+                loggerEventArgs.Message.Should().Be(MESSAGE);
+                loggerEventArgs.DateTime.Should().BeAfter(from).And.BeBefore(to);
+
+            }
         }
+
+        //[Fact]
+        //public void Log_AnyMessage_ValidEventInvoked()
+        //{
+        //    //Arrage
+        //    var logger = new Logger();
+        //    const string MESSAGE = "a";
+        //    object? loggerSender = null;
+        //    Logger.LoggerEventArgs? loggerEventArgs = null;
+        //    logger.MessageLogged += (sender, args) => { loggerSender = sender; loggerEventArgs = args as Logger.LoggerEventArgs; };
+        //    DateTime from = DateTime.Now;
+
+        //    //Act
+        //    logger.Log(MESSAGE);
+
+        //    //Assert
+        //    DateTime to = DateTime.Now;
+        //    Assert.Equal(logger, loggerSender);
+        //    Assert.NotNull(loggerEventArgs);
+        //    Assert.Equal(MESSAGE, loggerEventArgs.Message);
+        //    Assert.InRange(loggerEventArgs.DateTime, from, to);
+        //}
 
         [Fact]
         public void GetLogAsync_DateRange_LoggedMessageAsync()
