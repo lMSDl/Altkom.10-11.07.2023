@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using AutoFixture;
 using FluentAssertions;
 using FluentAssertions.Execution;
 
@@ -16,8 +17,9 @@ namespace ConsoleApp.Test.xUnit
         public void Log_AnyMessage_MessageLogged()
         {
             //Arrage
+            var fixture = new Fixture();
             var logger = new Logger();
-            const string MESSAGE = "a";
+            string MESSAGE = fixture.Create<string>();
             DateTime from = DateTime.Now;
 
             //Act
@@ -34,7 +36,7 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrage
             var logger = new Logger();
-            const string MESSAGE = "a";
+            string MESSAGE = new Fixture().Create<string>();
             var result = false;
             logger.MessageLogged += (sender, args) => result = true;
 
@@ -51,7 +53,7 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrage
             var logger = new Logger();
-            const string MESSAGE = "a";
+            string MESSAGE = new Fixture().Create<string>();
             using var monitor = logger.Monitor();
             DateTime from = DateTime.Now;
 
@@ -72,7 +74,7 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrage
             var logger = new Logger();
-            const string MESSAGE = "a";
+            string MESSAGE = new Fixture().Create<string>();
             object? loggerSender = null;
             Logger.LoggerEventArgs? loggerEventArgs = null;
             logger.MessageLogged += (sender, args) => { loggerSender = sender; loggerEventArgs = args as Logger.LoggerEventArgs; };
@@ -119,7 +121,7 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrage
             var logger = new Logger();
-            const string MESSAGE = "a";
+            string MESSAGE = new Fixture().Create<string>();
             DateTime from = DateTime.Now;
             logger.Log(MESSAGE);
             DateTime to = DateTime.Now;
@@ -140,12 +142,16 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrage
             var logger = new Logger();
-            const string MESSAGE = "a";
-            logger.Log(MESSAGE);
+            var fixture = new Fixture();
+            var message1 = fixture.Create<string>();
+            var message2 = fixture.Create<string>();
+            var message3 = fixture.Create<string>();
+
+            logger.Log(message1);
             DateTime from = DateTime.Now;
-            logger.Log(MESSAGE);
+            logger.Log(message2);
             DateTime to = DateTime.Now;
-            logger.Log(MESSAGE);
+            logger.Log(message3);
 
             //Act
             var task = logger.GetLogsAsync(from, to);
@@ -155,6 +161,7 @@ namespace ConsoleApp.Test.xUnit
             //Assert
             Assert.True(task.IsCompletedSuccessfully);
             Assert.DoesNotContain("\n", result);
+            result.Should().Contain(message2).And.NotContainAll(new[] {message1, message3});
         }
     }
 }
