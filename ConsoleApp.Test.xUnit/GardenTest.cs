@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AutoFixture;
+using FluentAssertions;
+using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +17,7 @@ namespace ConsoleApp.Test.xUnit
         //odpowiednik SetUp w xUnit
         public GardenTest()
         {
-            Garden = new Garden(0);
+            Garden = new Garden(0, null);
         }
 
         //odpowiednik TearDown w xUnit
@@ -34,8 +37,10 @@ namespace ConsoleApp.Test.xUnit
         [InlineData(int.MinValue, 0)]
         public void Garden_SizeInit(int initSize, int outputSize)
         {
+            var loggerStab = new Mock<ILogger>();
+
             //Act
-            var garden = new Garden(initSize);
+            var garden = new Garden(initSize, loggerStab.Object);
             //Assert
             Assert.Equal(outputSize, garden.Size);
         }
@@ -63,7 +68,7 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrange
             const int MIN_VALID_SIZE = 1;
-            const string VALID_NAME = "a";
+            string VALID_NAME = new Fixture().Create<string>();
             var garden = PrepareGarden(MIN_VALID_SIZE);
 
             //Act
@@ -76,7 +81,8 @@ namespace ConsoleApp.Test.xUnit
         //przy powtarzającym się kodzie Arrange zamiast metody SetUp zaleca się utworzenie zwykłej metody i ręczne wywołanie jej
         private static Garden PrepareGarden(int gardenSize)
         {
-            return new Garden(gardenSize);
+            var loggerStab = new Mock<ILogger>();
+            return new Garden(gardenSize, loggerStab.Object);
         }
 
         [Fact]
@@ -84,7 +90,7 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrange
             const int MAX_VALID_SIZE = 1;
-            const string VALID_NAME = "a";
+            string VALID_NAME = new Fixture().Create<string>();
             var garden = PrepareGarden(MAX_VALID_SIZE);
             garden.Plant(VALID_NAME);
 
@@ -100,9 +106,10 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrange
             const int MAX_VALID_SIZE = 2;
-            const string VALID_NAME = "a";
-            const string EXPECTED_NAME = VALID_NAME + "2";
-            var garden = new Garden(MAX_VALID_SIZE);
+            string VALID_NAME = new Fixture().Create<string>();
+            string EXPECTED_NAME = VALID_NAME + "2";
+            var loggerStab = new Mock<ILogger>();
+            var garden = new Garden(MAX_VALID_SIZE, loggerStab.Object);
             garden.Plant(VALID_NAME);
 
             //Act
@@ -121,7 +128,8 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrange
             const int MIN_VALID_SIZE = default;
-            var garden = new Garden(MIN_VALID_SIZE);
+            var loggerStab = new Mock<ILogger>();
+            var garden = new Garden(MIN_VALID_SIZE, loggerStab.Object);
 
             //Act
             Action result = () => garden.Plant(invalidName);
@@ -137,7 +145,8 @@ namespace ConsoleApp.Test.xUnit
             //Arrange
             const int MIN_VALID_SIZE = default;
             const string? NULL_NAME = null;
-            var garden = new Garden(MIN_VALID_SIZE);
+            var loggerStab = new Mock<ILogger>();
+            var garden = new Garden(MIN_VALID_SIZE, loggerStab.Object);
 
             //Act
             Action result = () => garden.Plant(NULL_NAME);
@@ -154,7 +163,8 @@ namespace ConsoleApp.Test.xUnit
             //Arrange
             const int MIN_VALID_SIZE = default;
             const string? WHITESPACE_NAME = " ";
-            var garden = new Garden(MIN_VALID_SIZE);
+            var loggerStab = new Mock<ILogger>();
+            var garden = new Garden(MIN_VALID_SIZE, loggerStab.Object);
 
             //Act
             var exception = Record.Exception(() => garden.Plant(WHITESPACE_NAME));
@@ -172,7 +182,8 @@ namespace ConsoleApp.Test.xUnit
         {
             //Arrage
             const int INSIGNIFICANT_SIZE = 0;
-            var garden = new Garden(INSIGNIFICANT_SIZE);
+            var loggerStab = new Mock<ILogger>();
+            var garden = new Garden(INSIGNIFICANT_SIZE, loggerStab.Object);
 
             //Act
             var result1 = garden.GetPlants();
@@ -180,6 +191,62 @@ namespace ConsoleApp.Test.xUnit
 
             //Assert
             Assert.NotSame(result1, result2);
+        }
+
+        [Fact]
+        public void Plant_ValidName_MessageLogged()
+        {
+            //Arrange
+            const int VALID_SIZE = 1;
+            string VALID_NAME = new Fixture().Create<string>();
+            var loggerMock = new Mock<ILogger>();
+            loggerMock.Setup(x => x.Log(It.IsAny<string>())).Verifiable();
+
+            var garden = new Garden(VALID_SIZE, loggerMock.Object);
+
+            //Act
+            garden.Plant(VALID_NAME);
+
+            //Assert
+            loggerMock.VerifyAll();
+        }
+
+        [Fact]
+        public void Plant_DuplicatedName_MessageLogged()
+        {
+            //Arrange
+            const int VALID_SIZE = 2;
+            string VALID_NAME = new Fixture().Create<string>();
+            var loggerMock = new Mock<ILogger>();
+            var garden = new Garden(VALID_SIZE, loggerMock.Object);
+            garden.Plant(VALID_NAME);
+
+            //Act
+            garden.Plant(VALID_NAME);
+
+            //Assert
+            loggerMock.Verify(x => x.Log(It.Is<string>(x => x.Contains(VALID_NAME))), Times.Exactly(3));
+            loggerMock.Verify(x => x.Log(It.Is<string>(x => x.StartsWith($"Roślina {VALID_NAME} zmienia nazwę na "))));
+        }
+
+        [Fact]
+        public void GetLastLogFromLastHour_LastLog()
+        {
+            //Arrange
+            var fixture = new Fixture();
+            string message1 = fixture.Create<string>();
+            string message2 = fixture.Create<string>();
+            var logger = new Mock<ILogger>();
+            logger.Setup(x => x.GetLogs(It.IsAny<DateTime>(), It.IsAny<DateTime>())).Returns($"{message1}\n{message2}");
+            
+            const int INSIGNIFICANT_SIZE = 0;
+            var garden = new Garden(INSIGNIFICANT_SIZE, logger.Object);
+
+            //Act
+            var result = garden.GetLastLogFromLastHour();
+
+            //Asert
+            result.Should().Be(message2);
         }
     }
 }

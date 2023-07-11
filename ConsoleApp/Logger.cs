@@ -1,6 +1,6 @@
 ﻿namespace ConsoleApp
 {
-    public class Logger
+    public class Logger : ILogger
     {
         private Dictionary<DateTime, string> _logs = new Dictionary<DateTime, string>();
         public event EventHandler<EventArgs>? MessageLogged;
